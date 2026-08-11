@@ -1,7 +1,20 @@
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, Clock } from "lucide-react";
+import { useEventSettings } from '../hooks/useEventSettings';
+
 
 const Hero = () => {
+    const { settings } = useEventSettings();
+
+  // Use settings if available, otherwise fallback to hardcoded defaults
+
+  const eventName = settings?.event_name || 'UNLEASH 3.0';
+  const theme = settings?.theme || 'ACCELERATE';
+  const startDate = settings?.start_date || 'September 5';
+  const endDate = settings?.end_date || '6, 2026';
+  const time = settings?.start_time || '8:00 AM';
+  const venue = settings?.venue || "King's Court Assembly";
+  const address = settings?.address || 'Ojodu Berger, Lagos';
   return (
     <section className="relative bg-unleash-cream overflow-hidden">
       {/* Subtle decorative shapes */}
@@ -16,11 +29,11 @@ const Hero = () => {
               Love of Christ Chapel International Ministry presents
             </p>
             <h1 className="font-display text-[4rem] sm:text-[5rem] md:text-[7rem] lg:text-[8rem] leading-[0.85] text-unleash-brown mb-4">
-              UNLEASH
+              {eventName}
               <span className="block text-unleash-orange">3.0</span>
             </h1>
             <h2 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-unleash-brown/90 mb-6">
-              ACCELERATE
+              {theme}
             </h2>
             <p className="text-lg md:text-xl text-unleash-brown/80 italic border-l-4 border-unleash-orange pl-4 mb-8">
               “The hand of the Lord was on Elijah; and he girded up his loins, and ran.” <br />
@@ -34,19 +47,19 @@ const Hero = () => {
               <div className="flex items-start gap-3">
                 <Calendar className="w-5 h-5 text-unleash-orange mt-0.5" />
                 <div>
-                  <p className="font-bold text-lg">September 5–6, 2026</p>
+                  <p className="font-bold text-lg">{startDate}–{endDate}</p>
                   <p className="text-sm">Saturday & Sunday</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-unleash-orange mt-0.5" />
-                <p className="font-bold text-lg">8:00 AM</p>
+                <p className="font-bold text-lg">{time}</p>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-unleash-orange mt-0.5" />
                 <div>
-                  <p className="font-bold text-lg">King’s Court Assembly</p>
-                  <p className="text-sm">Ojodu Berger, Lagos</p>
+                  <p className="font-bold text-lg">{venue}</p>
+                  <p className="text-sm">{address}</p>
                 </div>
               </div>
             </div>

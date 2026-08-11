@@ -1,6 +1,12 @@
 from django.urls import path
-from .views import event_settings
+from .views import EventSettingsView
 
 urlpatterns = [
-    path('event-settings/', event_settings, name='event-settings'),
+    # your existing URLs...
+
+    path(
+        "event-settings/",
+        EventSettingsView.as_view(),
+        name="event-settings"
+    ),
 ]

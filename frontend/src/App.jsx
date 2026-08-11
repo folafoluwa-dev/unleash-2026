@@ -18,6 +18,7 @@ import ChurchPage from "./pages/Church.jsx";
 import ContactPage from "./pages/Contact.jsx";
 import Navbar from "./components/Navbar.jsx";
 import CheckIn from "./pages/admin/CheckIn.jsx";
+import Settings from './pages/admin/Settings.jsx';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
               <Route path="/admin/gallery" element={<GalleryAdmin />} />
               <Route path="/admin/event" element={<EventAdmin />} />
               <Route path="/admin/check-in" element={<CheckIn />} />
+              <Route path="/admin/settings" element={<Settings />} />
               <Route path="/admin/messages" element={<MessagesAdmin />} />
             </Route>
           </Route>

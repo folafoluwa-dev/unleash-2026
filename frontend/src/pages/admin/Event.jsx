@@ -11,7 +11,7 @@ export default function EventAdmin() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const data = await authFetch("/api/event/");
+        const data = await authFetch("/api/event-settings/");
         setEvent(data);
       } catch (err) {
         setError("Unable to load event details.");

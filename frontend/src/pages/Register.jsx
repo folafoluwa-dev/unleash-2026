@@ -1,21 +1,18 @@
-// src/pages/Register.jsx
+import { useState, useEffect } from "react";
+import Footer from "../components/Footer";
+import RegistrationHero from "../components/registration/RegistrationHero";
+import EventSummary from "../components/registration/EventSummary";
+import HowRegistrationWorks from "../components/registration/HowRegistrationWorks";
+import RegistrationForm from "../components/registration/RegistrationForm";
+import RegistrationConfirmation from "../components/registration/RegistrationConfirmation";
+import { getEventSettings } from "../services/eventSettingsService";
 
-import { useState } from "react";
-import Footer from "../components/Footer.jsx";
-import RegistrationHero from "../components/registration/RegistrationHero.jsx";
-import EventSummary from "../components/registration/EventSummary.jsx";
-import RegistrationForm from "../components/registration/RegistrationForm.jsx";
-import RegistrationConfirmation from "../components/registration/RegistrationConfirmation.jsx";
-import HowRegistrationWorks from "../components/registration/HowRegistrationWorks.jsx";
-
-
-// Lazy initializer – reads localStorage once
 const getInitialRegistration = () => {
+  if (typeof window === "undefined") return null;
   try {
-    const saved = localStorage.getItem("unleash_registration");
-    return saved ? JSON.parse(saved) : null;
+    const stored = window.localStorage.getItem("registration");
+    return stored ? JSON.parse(stored) : null;
   } catch {
-    localStorage.removeItem("unleash_registration");
     return null;
   }
 };
@@ -23,37 +20,64 @@ const getInitialRegistration = () => {
 const RegisterPage = () => {
   const [registration, setRegistration] = useState(getInitialRegistration);
   const [step, setStep] = useState(() => (registration ? "confirmation" : "form"));
+  const [registrationOpen, setRegistrationOpen] = useState(null); // null = loading
+
+  useEffect(() => {
+    const checkRegistrationStatus = async () => {
+      try {
+        const settings = await getEventSettings();
+        setRegistrationOpen(settings.registration_open);
+      } catch {
+        setRegistrationOpen(false); // fallback closed
+      }
+    };
+    checkRegistrationStatus();
+  }, []);
 
   const handleRegistrationSuccess = (regData) => {
     setRegistration(regData);
     setStep("confirmation");
-    localStorage.setItem("unleash_registration", JSON.stringify(regData));
+    try {
+      window.localStorage.setItem("registration", JSON.stringify(regData));
+    } catch {
+      // ignore localStorage errors
+    }
   };
 
   const handleRegisterAnother = () => {
     setRegistration(null);
     setStep("form");
-    localStorage.removeItem("unleash_registration");
+    try {
+      window.localStorage.removeItem("registration");
+    } catch {
+      // ignore localStorage errors
+    }
   };
-
-  // If there's a stored registration but step was manually changed, keep in sync
-  // (not needed since step is derived from registration presence)
 
   return (
     <>
       <main>
         <RegistrationHero />
         <EventSummary />
-        <HowRegistrationWorks />   {/* ← new */}
-        {step === "form" && (
-          <RegistrationForm onSuccess={handleRegistrationSuccess} />
-        )}
-        {step === "confirmation" && registration && (
+        <HowRegistrationWorks />
+
+        {registrationOpen === null ? (
+          <div className="text-center py-12">Loading...</div>
+        ) : step === "confirmation" && registration ? (
           <RegistrationConfirmation
             registration={registration}
             onRegisterAnother={handleRegisterAnother}
           />
-        )}
+        ) : step === "form" && registrationOpen ? (
+          <RegistrationForm onSuccess={handleRegistrationSuccess} />
+        ) : step === "form" && !registrationOpen ? (
+          <div className="py-16 text-center max-w-2xl mx-auto px-4">
+            <h2 className="font-display text-4xl text-unleash-brown mb-4">Registration Closed</h2>
+            <p className="text-lg text-unleash-brown/80">
+              Registration for UNLEASH 3.0 has ended. Thank you for your interest.
+            </p>
+          </div>
+        ) : null}
       </main>
       <Footer />
     </>

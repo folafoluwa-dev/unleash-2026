@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, Mic, Image as ImageIcon, CalendarDays, MessageSquare, LogOut, Menu, X,QrCode
+  LayoutDashboard, Users,Settings as SettingsIcon, Mic, Image as ImageIcon, CalendarDays, MessageSquare, LogOut, Menu, X,QrCode
 } from 'lucide-react';
 import { useAuth } from "../../auth/AuthContext.jsx";
 
@@ -13,6 +13,7 @@ const navItems = [
   { to: '/admin/event', icon: CalendarDays, label: 'Event' },
   { to: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { to: '/admin/check-in', icon: QrCode, label: 'Check‑in' },
+  { to: '/admin/settings', icon: SettingsIcon, label: 'Settings' },
 
 ];
 
