@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@theme {
+  --color-unleash-brown: #3a1b0b;
+  --color-unleash-dark-brown: #241108;
+  --color-unleash-orange: #e85d04;
+  --color-unleash-gold: #f5a623;
+  --color-unleash-cream: #fff4de;
+  --color-unleash-light-cream: #fff9ef;
+  --color-unleash-green: #075b2a;
+
+  --color-orange-burnt: #e85d04;
+  --color-orange-gold: #f5a623;
+  --color-brown-dark: #241108;
+  --color-brown-deep: #3a1b0b;
+  --color-cream-light: #fff9ef;
+  --color-cream-warm: #fff4de;
+
+  --font-display: "Anton", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@media print {
+  header, footer, nav, .no-print {
+    display: none !important;
+  }
+  body {
+    background-color: white !important;
+  }
+}
