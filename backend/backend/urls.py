@@ -20,6 +20,10 @@ urlpatterns = [
         "api/",
         include("speakers.urls"),
     ),
+    path(
+        "api/",
+        include("events.urls"),
+    ),
 ]
 if settings.DEBUG:
     urlpatterns += static(
