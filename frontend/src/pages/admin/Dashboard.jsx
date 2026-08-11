@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Users, CheckCircle, Clock, UserCheck, XCircle } from "lucide-react";
-import { useApiGet } from "../../hooks/useApiGet";
+import { useApiGet } from "../../hooks/useApiGet.js";
 
 export default function Dashboard() {
   const {

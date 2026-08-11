@@ -1,12 +1,12 @@
 // src/pages/Register.jsx
 
 import { useState } from "react";
-import Footer from "../components/Footer";
-import RegistrationHero from "../components/registration/RegistrationHero";
-import EventSummary from "../components/registration/EventSummary";
-import RegistrationForm from "../components/registration/RegistrationForm";
-import RegistrationConfirmation from "../components/registration/RegistrationConfirmation";
-import HowRegistrationWorks from "../components/registration/HowRegistrationWorks";
+import Footer from "../components/Footer.jsx";
+import RegistrationHero from "../components/registration/RegistrationHero.jsx";
+import EventSummary from "../components/registration/EventSummary.jsx";
+import RegistrationForm from "../components/registration/RegistrationForm.jsx";
+import RegistrationConfirmation from "../components/registration/RegistrationConfirmation.jsx";
+import HowRegistrationWorks from "../components/registration/HowRegistrationWorks.jsx";
 
 
 // Lazy initializer – reads localStorage once

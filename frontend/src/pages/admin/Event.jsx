@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useApi } from "../../services/api";
+import { useApi } from "../../services/api.js";
 
 export default function EventAdmin() {
   const authFetch = useApi();

@@ -1,4 +1,4 @@
-import GalleryItem from "./GalleryItem";
+import GalleryItem from "./GalleryItem.jsx";
 
 const GalleryGrid = ({ images, onImageClick }) => {
   if (images.length === 0) {

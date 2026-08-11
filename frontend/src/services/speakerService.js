@@ -11,7 +11,6 @@ export const createSpeaker = (formData) =>
   axiosInstance.post('/api/speakers/', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then(res => res.data);
-
 export const updateSpeaker = (id, formData) => {
   // formData can be a plain object (JSON) or FormData (for file upload)
   const config = {};

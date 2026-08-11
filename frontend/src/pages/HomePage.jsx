@@ -1,13 +1,13 @@
-import Hero from "../components/Hero";
-import Countdown from "../components/Countdown";
-import EventIntro from "../components/EventIntro";
-import EventDays from "../components/EventDays";
-import SpeakerPreview from "../components/SpeakerPreview";
-import ProgrammePreview from "../components/ProgrammePreview";
-import VenueSection from "../components/VenueSection";
-import RegistrationCTA from "../components/RegistrationCTA";
-import ChurchPreview from "../components/ChurchPreview";
-import Footer from "../components/Footer";
+import Hero from "../components/Hero.jsx";
+import Countdown from "../components/Countdown.jsx";
+import EventIntro from "../components/EventIntro.jsx";
+import EventDays from "../components/EventDays.jsx";
+import SpeakerPreview from "../components/SpeakerPreview.jsx";
+import ProgrammePreview from "../components/ProgrammePreview.jsx";
+import VenueSection from "../components/VenueSection.jsx";
+import RegistrationCTA from "../components/RegistrationCTA.jsx";
+import ChurchPreview from "../components/ChurchPreview.jsx";
+import Footer from "../components/Footer.jsx";
 
 const HomePage = () => {
   return (

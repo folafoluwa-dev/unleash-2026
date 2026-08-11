@@ -1,40 +1,43 @@
-from rest_framework import generics,permissions
 from rest_framework.permissions import IsAdminUser,AllowAny
 from .models import Speaker
 from .serializers import SpeakerSerializer, AdminSpeakerSerializer
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 
-class SpeakerListView(generics.ListAPIView):
-    queryset = Speaker.objects.filter(is_active=True)
-    serializer_class = SpeakerSerializer
-    permission_classes = [AllowAny]
+@api_view(['GET','POST'])
+@permission_classes([AllowAny])
+def speaker_list(request):
+    if request.method == 'GET':
+        speakers = Speaker.objects.filter(is_active=True)
+        serializer = SpeakerSerializer(speakers, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        permission_classes([IsAdminUser])
+        serializer = AdminSpeakerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
     
-class AdminSpeakerListView(generics.ListCreateAPIView):
-    queryset = Speaker.objects.all()
-    serializer_class = AdminSpeakerSerializer
-    permission_classes = [IsAdminUser]
-    
-class AdminSpeakerDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Speaker.objects.all()
-    serializer_class = AdminSpeakerSerializer
-    permission_classes = [IsAdminUser]
+@api_view(['GET','PUT','DELETE'])
+@permission_classes([AllowAny])
+def speaker_detail(request, pk):
+    try:
+        speaker = Speaker.objects.get(pk=pk)
+    except Speaker.DoesNotExist:
+        return Response(status=404)
 
-class AdminSpeakerOrderUpdateView(generics.UpdateAPIView):
-    queryset = Speaker.objects.all()
-    serializer_class = AdminSpeakerSerializer
-    permission_classes = [IsAdminUser]
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        new_order = request.data.get("display_order")
-        if new_order is not None:
-            instance.display_order = new_order
-            instance.save()
-            return Response({"status": "display order updated"})
-        else:
-            return Response({"error": "display_order not provided"}, status=400)
-        
-class AdminSpeakerDeleteView(generics.DestroyAPIView):
-    queryset = Speaker.objects.all()
-    serializer_class = AdminSpeakerSerializer
-    permission_classes = [IsAdminUser]
+    if request.method == 'GET':
+        serializer = SpeakerSerializer(speaker)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        permission_classes([IsAdminUser])
+        serializer = AdminSpeakerSerializer(speaker, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        permission_classes([IsAdminUser])
+        speaker.delete()
+        return Response(status=204)

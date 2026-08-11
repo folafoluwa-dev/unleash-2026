@@ -1,11 +1,11 @@
-import Footer from "../components/Footer";
-import ContactHero from "../components/contact/ContactHero";
-import ContactInfo from "../components/contact/ContactInfo";
-import LocationSection from "../components/contact/LocationSection";
-import GettingThere from "../components/contact/GettingThere";
-import ContactForm from "../components/contact/ContactForm";
-import FAQ from "../components/contact/FAQ";
-import ContactCTA from "../components/contact/ContactCTA";
+import Footer from "../components/Footer.jsx";
+import ContactHero from "../components/contact/ContactHero.jsx";
+import ContactInfo from "../components/contact/ContactInfo.jsx";
+import LocationSection from "../components/contact/LocationSection.jsx";
+import GettingThere from "../components/contact/GettingThere.jsx";
+import ContactForm from "../components/contact/ContactForm.jsx";
+import FAQ from "../components/contact/FAQ.jsx";
+import ContactCTA from "../components/contact/ContactCTA.jsx";
 
 const ContactPage = () => {
     return (

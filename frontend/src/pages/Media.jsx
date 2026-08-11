@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Footer from "../components/Footer";
-import MediaHero from "../components/media/MediaHero";
-import MediaIntro from "../components/media/MediaIntro";
-import FeaturedMemories from "../components/media/FeaturedMemories";
-import GalleryGrid from "../components/media/GalleryGrid";
-import GalleryLightbox from "../components/media/GalleryLightbox";
-import MediaCTA from "../components/media/MediaCTA";
-import galleryImages from "../data/gallery";
+import Footer from "../components/Footer.jsx";
+import MediaHero from "../components/media/MediaHero.jsx";
+import MediaIntro from "../components/media/MediaIntro.jsx";
+import FeaturedMemories from "../components/media/FeaturedMemories.jsx";
+import GalleryGrid from "../components/media/GalleryGrid.jsx";
+import GalleryLightbox from "../components/media/GalleryLightbox.jsx";
+import MediaCTA from "../components/media/MediaCTA.jsx";
+import galleryImages from "../data/gallery.js";
 
 const MediaPage = () => {
   const [lightboxIndex, setLightboxIndex] = useState(null);

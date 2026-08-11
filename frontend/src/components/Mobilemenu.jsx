@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { X } from 'lucide-react';
-import { NAV_LINKS } from '../data/event';
+import { NAV_LINKS } from "../data/event.js";
 
 export default function MobileMenu({ open, onClose }) {
   return (

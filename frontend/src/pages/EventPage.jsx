@@ -10,8 +10,8 @@ import {
   HelpCircle,
   Wrench,
 } from "lucide-react";
-import VenueSection from "../components/VenueSection";
-import RegistrationCTA from "../components/RegistrationCTA";
+import VenueSection from "../components/VenueSection.jsx";
+import RegistrationCTA from "../components/RegistrationCTA.jsx";
 
 // Reusable sub-components for this page
 const EventHero = () => (

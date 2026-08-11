@@ -1,23 +1,23 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './auth/AuthContext';
-import ProtectedRoute from './auth/ProtectedRoute';
-import AdminLayout from './components/admin/AdminLayout';
-import AdminLogin from './pages/admin/AdminLogin';
-import Dashboard from './pages/admin/Dashboard';
-import Registrations from './pages/admin/Registrations';
-import SpeakersAdmin from './pages/admin/Speakers';
-import GalleryAdmin from './pages/admin/Gallery';
-import EventAdmin from './pages/admin/Event';
-import MessagesAdmin from './pages/admin/Messages';
-import HomePage from './pages/HomePage';
-import EventPage from './pages/EventPage';
-import RegisterPage from './pages/Register';
-import SpeakersPage from './pages/Speakers';
-import MediaPage from './pages/Media';
-import ChurchPage from './pages/Church';
-import ContactPage from './pages/Contact';
-import Navbar from './components/Navbar';
-import CheckIn from './pages/admin/CheckIn';
+import { AuthProvider } from "./auth/AuthContext.jsx";
+import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import AdminLayout from "./components/admin/AdminLayout.jsx";
+import AdminLogin from "./pages/admin/AdminLogin.jsx";
+import Dashboard from "./pages/admin/Dashboard.jsx";
+import Registrations from "./pages/admin/Registrations.jsx";
+import SpeakersAdmin from "./pages/admin/Speakers.jsx";
+import GalleryAdmin from "./pages/admin/Gallery.jsx";
+import EventAdmin from "./pages/admin/Event.jsx";
+import MessagesAdmin from "./pages/admin/Messages.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import EventPage from "./pages/EventPage.jsx";
+import RegisterPage from "./pages/Register.jsx";
+import SpeakersPage from "./pages/Speakers.jsx";
+import MediaPage from "./pages/Media.jsx";
+import ChurchPage from "./pages/Church.jsx";
+import ContactPage from "./pages/Contact.jsx";
+import Navbar from "./components/Navbar.jsx";
+import CheckIn from "./pages/admin/CheckIn.jsx";
 
 function App() {
   return (

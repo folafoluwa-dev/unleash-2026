@@ -1,6 +1,6 @@
 import { useState } from "react";
-import FormField from "./FormField";
-import { registerAttendee } from "../../services/registrationService";
+import FormField from "./FormField.jsx";
+import { registerAttendee } from "../../services/registrationService.js";
 
 const initialFormData = {
   fullName: "",

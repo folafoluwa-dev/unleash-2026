@@ -1,4 +1,4 @@
-import { useApiGet } from "../../hooks/useApiGet";
+import { useApiGet } from "../../hooks/useApiGet.js";
 import { Mail } from "lucide-react"; // keep only used ones
 
 export default function MessagesAdmin() {

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback } from 'react';
-import { login as loginApi, refreshToken as refreshTokenApi } from './authService';
+import { login as loginApi, refreshToken as refreshTokenApi } from "./authService.js";
 
 const AuthContext = createContext(null);
 

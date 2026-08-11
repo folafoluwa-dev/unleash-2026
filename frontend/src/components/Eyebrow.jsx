@@ -1,4 +1,4 @@
-import AccentStripe from './AccentStripe';
+import AccentStripe from "./AccentStripe.jsx";
 
 export default function Eyebrow({ children, dark = false }) {
   return (

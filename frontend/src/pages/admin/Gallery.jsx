@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useApi } from "../../services/api";
+import { useApi } from "../../services/api.js";
 import { Plus, Trash2, Image as ImageIcon } from "lucide-react";
 
 export default function GalleryAdmin() {

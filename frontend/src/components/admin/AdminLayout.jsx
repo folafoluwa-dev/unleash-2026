@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Mic, Image as ImageIcon, CalendarDays, MessageSquare, LogOut, Menu, X,QrCode
 } from 'lucide-react';
-import { useAuth } from '../../auth/AuthContext';
+import { useAuth } from "../../auth/AuthContext.jsx";
 
 const navItems = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },

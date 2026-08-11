@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Search, X, Download, RefreshCw, Eye, ChevronLeft, ChevronRight } from "lucide-react";
-import { getRegistrations, getRegistration, updateRegistrationStatus } from "../../services/registrationService";
+import { getRegistrations, getRegistration, updateRegistrationStatus } from "../../services/registrationService.js";
 
 const STATUS_OPTIONS = ["all", "pending", "confirmed", "attended", "cancelled"];
 const ITEMS_PER_PAGE = 10;

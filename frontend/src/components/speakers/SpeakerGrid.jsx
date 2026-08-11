@@ -1,4 +1,4 @@
-import SpeakerCard from "./SpeakerCard";
+import SpeakerCard from "./SpeakerCard.jsx";
 
 const SpeakerGrid = ({ speakers }) => {
   return (

@@ -1,4 +1,4 @@
-import galleryImages from "../../data/gallery";
+import galleryImages from "../../data/gallery.js";
 
 const FeaturedMemories = () => {
   const featured = galleryImages.filter((img) => img.featured).slice(0, 5);
