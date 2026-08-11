@@ -147,3 +147,6 @@ CORS_ALLOWED_ORIGINS = [
     os.getenv('ALLOW_ORIGIN'),
 ]
 CORS_ALLOW_CREDENTIALS=os.getenv('CORS_ALLOW_CREDENTIALS') == 'True'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
