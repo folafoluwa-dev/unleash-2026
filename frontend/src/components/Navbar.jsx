@@ -70,6 +70,8 @@ const Navbar = () => {
             </button>
           </div>
           {/* Mobile Navigation */}
+
+        </div>
 {isMobileMenuOpen && (
   <nav className="md:hidden pb-6">
     <div className="flex flex-col gap-4">
@@ -100,8 +102,6 @@ const Navbar = () => {
     </div>
   </nav>
 )}
-
-        </div>
       </div>
     </header>
   );
