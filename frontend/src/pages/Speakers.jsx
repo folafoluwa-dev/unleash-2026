@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import Footer from "../components/Footer.jsx";
-import SpeakersHero from "../components/speakers/SpeakersHero.jsx";
-import SpeakerIntro from "../components/speakers/SpeakerIntro.jsx";
-import SpeakerGrid from "../components/speakers/SpeakerGrid.jsx";
-import ThemeReminder from "../components/speakers/ThemeReminder.jsx";
-import RegistrationCTA from "../components/RegistrationCTA.jsx";
-import { getPublicSpeakers } from "../services/speakerService.js";
+import Footer from "../components/Footer";
+import SpeakersHero from "../components/speakers/SpeakersHero";
+import SpeakerIntro from "../components/speakers/SpeakerIntro";
+import SpeakerGrid from "../components/speakers/SpeakerGrid";
+import ThemeReminder from "../components/speakers/ThemeReminder";
+import RegistrationCTA from "../components/RegistrationCTA";
+import { getPublicSpeakers } from "../services/speakerService";
+import { getMediaUrl } from "../utils/mediaUtils";
 
 const SpeakersPage = () => {
   const [speakers, setSpeakers] = useState([]);
@@ -21,23 +22,20 @@ const SpeakersPage = () => {
           setSpeakers([]);
           return;
         }
-        // Map API fields to the format expected by SpeakerCard
         const mapped = list.map((speaker) => ({
           id: speaker.id,
           name: speaker.name,
           title: speaker.title || "Speaker",
-          ministry: "", // not used but required by card
+          ministry: "",
           bio: speaker.biography || "",
-          image: speaker.photo || null,
-          status: "announced", // active speakers are always announced
+          image: getMediaUrl(speaker.photo),  // use resolved photo URL
+          status: "announced",  // if the speaker is returned, they are active
           socials: {},
         }));
-        // Sort by display_order (backend may already sort, but just in case)
-        mapped.sort((a, b) => a.display_order - b.display_order);
         setSpeakers(mapped);
       } catch (err) {
         setError("Unable to load speakers.");
-        console.error(err);
+        console.log(err)
       } finally {
         setLoading(false);
       }

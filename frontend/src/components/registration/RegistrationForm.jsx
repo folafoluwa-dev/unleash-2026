@@ -89,7 +89,16 @@ const RegistrationForm = ({ onSuccess }) => {
     setErrors({});
 
     try {
-      const registrationData = await registerAttendee(formData);
+      const payload = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone_number: formData.phone,
+        age: Number(formData.age),
+        city: formData.city,
+        additional_information: formData.additionalInformation,
+      };
+
+      const registrationData = await registerAttendee(payload);
       onSuccess(registrationData);  // pass whole object
     } catch (error) {
       if (error.validationErrors) {

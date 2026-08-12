@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, ToggleLeft, ToggleRight, X, Camera, Trash2 } from "lucide-react";
 import {
-  getSpeakers,
-  createSpeaker,
-  updateSpeaker,
-  deleteSpeaker,
+  Plus, Edit, ToggleLeft, ToggleRight, X, Camera, Trash2,
+} from "lucide-react";
+import {
+  getSpeakers, createSpeaker, updateSpeaker, deleteSpeaker,
 } from "../../services/speakerService";
+import { getMediaUrl } from "../../utils/mediaUtils";
 
 const emptyForm = {
   name: "",
   title: "",
   biography: "",
   display_order: 0,
-  is_active: true,
+  is_active: true,   // still keep in form for future use
   photo: null,
 };
 
@@ -36,50 +36,35 @@ export default function SpeakersAdmin() {
       setSpeakers(Array.isArray(list) ? list : []);
     } catch (err) {
       setError("Unable to load speakers.");
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      if (mounted) setLoading(true);
-      if (mounted) setError("");
-      try {
-        const data = await getSpeakers();
-        if (!mounted) return;
-        const list = data.results || data;
-        setSpeakers(Array.isArray(list) ? list : []);
-      } catch (err) {
-        if (mounted) setError("Unable to load speakers.");
-        console.error(err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    })();
-    return () => {
-      mounted = false;
+    const loadSpeakers = async () => {
+      await fetchSpeakers();
     };
+
+    loadSpeakers();
   }, []);
 
-  const openAddModal = () => {
+  const openAdd = () => {
     setEditId(null);
     setFormData(emptyForm);
     setFormError("");
     setShowModal(true);
   };
 
-  const openEditModal = (speaker) => {
+  const openEdit = (speaker) => {
     setEditId(speaker.id);
     setFormData({
       name: speaker.name,
       title: speaker.title || "",
       biography: speaker.biography || "",
       display_order: speaker.display_order || 0,
-      is_active: speaker.is_active,
-      photo: null, // new file selection
+      is_active: speaker.is_active ?? true,   // use ?? to default to true if undefined
+      photo: null,
     });
     setFormError("");
     setShowModal(true);
@@ -94,11 +79,11 @@ export default function SpeakersAdmin() {
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (type === "file") {
-      setFormData((prev) => ({ ...prev, photo: files[0] }));
+      setFormData(prev => ({ ...prev, photo: files[0] }));
     } else if (type === "checkbox") {
-      setFormData((prev) => ({ ...prev, [name]: checked }));
+      setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -116,7 +101,8 @@ export default function SpeakersAdmin() {
       fd.append("title", formData.title);
       fd.append("biography", formData.biography);
       fd.append("display_order", formData.display_order);
-      fd.append("is_active", formData.is_active);
+      // Only include is_active if the backend supports it; otherwise it's harmless but may be ignored
+      fd.append("is_active", formData.is_active ? "true" : "false");
       if (formData.photo) {
         fd.append("photo", formData.photo);
       }
@@ -136,45 +122,43 @@ export default function SpeakersAdmin() {
     }
   };
 
+  // Toggle active – only functional if is_active exists in API.
+  // We'll still attempt PATCH, but if it fails, revert UI and show error.
   const toggleActive = async (speaker) => {
     const newStatus = !speaker.is_active;
+    // Optimistic UI update
+    setSpeakers(prev =>
+      prev.map(s => (s.id === speaker.id ? { ...s, is_active: newStatus } : s))
+    );
     try {
       await updateSpeaker(speaker.id, { is_active: newStatus });
-      setSpeakers((prev) =>
-        prev.map((s) => (s.id === speaker.id ? { ...s, is_active: newStatus } : s))
+    } catch (err) {
+      // Revert
+      setSpeakers(prev =>
+        prev.map(s => (s.id === speaker.id ? { ...s, is_active: speaker.is_active } : s))
       );
-    } catch {
-      // silently fail, could show toast
+      alert("Failed to update active status. Backend may not support it yet.");
+      console.error("Toggle active failed:", err);
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await deleteSpeaker(id);
-      setSpeakers((prev) => prev.filter((s) => s.id !== id));
+      setSpeakers(prev => prev.filter(s => s.id !== id));
       setDeleteConfirm(null);
-    } catch {
-      // error handling
+    } catch (err) {
+      console.error("Delete speaker failed:", err);
     }
   };
 
-  if (loading) {
-    return <div className="text-center py-12">Loading speakers...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-red-600 mb-4">{error}</p>
-        <button
-          onClick={fetchSpeakers}
-          className="bg-unleash-orange text-white px-6 py-2 rounded-lg hover:bg-unleash-brown transition-colors"
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
+  if (loading) return <div className="text-center py-12">Loading speakers...</div>;
+  if (error) return (
+    <div className="text-center py-12">
+      <p className="text-red-600 mb-4">{error}</p>
+      <button onClick={fetchSpeakers} className="bg-unleash-orange text-white px-6 py-2 rounded-lg">Try Again</button>
+    </div>
+  );
 
   return (
     <div>
@@ -184,7 +168,7 @@ export default function SpeakersAdmin() {
           <p className="text-gray-500 mt-1">Manage speakers for UNLEASH 3.0</p>
         </div>
         <button
-          onClick={openAddModal}
+          onClick={openAdd}
           className="inline-flex items-center gap-2 bg-unleash-orange text-white px-4 py-2 rounded-lg font-bold hover:bg-unleash-brown transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -215,7 +199,7 @@ export default function SpeakersAdmin() {
                   <td className="p-3">
                     {speaker.photo ? (
                       <img
-                        src={speaker.photo}
+                        src={getMediaUrl(speaker.photo)}
                         alt={speaker.name}
                         className="w-10 h-10 rounded-full object-cover"
                       />
@@ -228,62 +212,40 @@ export default function SpeakersAdmin() {
                   <td className="p-3 font-medium">{speaker.name}</td>
                   <td className="p-3">{speaker.title || "—"}</td>
                   <td className="p-3">
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        speaker.is_active
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {speaker.is_active ? "Active" : "Inactive"}
-                    </span>
+                    {Object.prototype.hasOwnProperty.call(speaker, 'is_active') ? (
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${speaker.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                        {speaker.is_active ? "Active" : "Inactive"}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
                   </td>
                   <td className="p-3">{speaker.display_order}</td>
                   <td className="p-3 text-right space-x-2">
-                    <button
-                      onClick={() => openEditModal(speaker)}
-                      className="p-1 text-blue-600 hover:bg-blue-50 rounded"
-                      title="Edit"
-                    >
+                    <button onClick={() => openEdit(speaker)} className="p-1 text-blue-600 hover:bg-blue-50 rounded" title="Edit">
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => toggleActive(speaker)}
-                      className={`p-1 rounded ${
-                        speaker.is_active
-                          ? "text-red-600 hover:bg-red-50"
-                          : "text-green-600 hover:bg-green-50"
-                      }`}
-                      title={speaker.is_active ? "Deactivate" : "Activate"}
-                    >
-                      {speaker.is_active ? (
-                        <ToggleRight className="w-4 h-4" />
-                      ) : (
-                        <ToggleLeft className="w-4 h-4" />
-                      )}
-                    </button>
+                    {/* Only show toggle if is_active exists */}
+                    {Object.prototype.hasOwnProperty.call(speaker, 'is_active') && (
+                      <button
+                        onClick={() => toggleActive(speaker)}
+                        className={`p-1 rounded ${speaker.is_active ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}
+                        title={speaker.is_active ? "Deactivate" : "Activate"}
+                      >
+                        {speaker.is_active ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
+                      </button>
+                    )}
                     {deleteConfirm === speaker.id ? (
                       <div className="inline-flex items-center gap-1">
-                        <button
-                          onClick={() => handleDelete(speaker.id)}
-                          className="p-1 text-red-600 bg-red-50 rounded"
-                          title="Confirm delete"
-                        >
+                        <button onClick={() => handleDelete(speaker.id)} className="p-1 text-red-600 bg-red-50 rounded" title="Confirm delete">
                           <Trash2 className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => setDeleteConfirm(null)}
-                          className="p-1 text-gray-600 bg-gray-100 rounded"
-                        >
+                        <button onClick={() => setDeleteConfirm(null)} className="p-1 text-gray-600 bg-gray-100 rounded">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
                     ) : (
-                      <button
-                        onClick={() => setDeleteConfirm(speaker.id)}
-                        className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
-                        title="Delete"
-                      >
+                      <button onClick={() => setDeleteConfirm(speaker.id)} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded" title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     )}
@@ -295,111 +257,110 @@ export default function SpeakersAdmin() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-xl font-bold text-unleash-brown">
-                {editId ? "Edit Speaker" : "Add Speaker"}
-              </h2>
-              <button onClick={closeModal} className="p-2 hover:bg-gray-100 rounded">
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4 py-6">
+          <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-semibold text-unleash-brown">
+                  {editId ? "Edit Speaker" : "Add Speaker"}
+                </h2>
+                <p className="text-sm text-gray-500">Manage speaker details for UNLEASH 3.0.</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="p-2 rounded-full text-gray-500 hover:bg-gray-100"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              {formError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                  {formError}
-                </div>
-              )}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name *
+
+            <form onSubmit={handleSubmit} className="px-6 py-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label className="block">
+                  <span className="text-sm font-medium text-unleash-brown">Name</span>
+                  <input
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-unleash-orange"
+                    required
+                  />
                 </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-unleash-orange focus:border-transparent"
-                />
+                <label className="block">
+                  <span className="text-sm font-medium text-unleash-brown">Title</span>
+                  <input
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-unleash-orange"
+                  />
+                </label>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title / Role
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-unleash-orange focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Biography
-                </label>
+
+              <label className="block">
+                <span className="text-sm font-medium text-unleash-brown">Biography</span>
                 <textarea
                   name="biography"
-                  rows={3}
                   value={formData.biography}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-unleash-orange focus:border-transparent"
+                  rows={4}
+                  className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-unleash-orange"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Display Order
-                </label>
-                <input
-                  type="number"
-                  name="display_order"
-                  value={formData.display_order}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-unleash-orange focus:border-transparent"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="is_active"
-                  checked={formData.is_active}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-unleash-orange rounded"
-                />
-                <label className="text-sm font-medium text-gray-700">
-                  Active (visible on website)
-                </label>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Photo {editId && "(leave empty to keep current)"}
-                </label>
-                {editId && speakers.find((s) => s.id === editId)?.photo && (
-                  <img
-                    src={speakers.find((s) => s.id === editId).photo}
-                    alt="Current"
-                    className="w-16 h-16 rounded-full object-cover mb-2"
+              </label>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <label className="block">
+                  <span className="text-sm font-medium text-unleash-brown">Order</span>
+                  <input
+                    name="display_order"
+                    type="number"
+                    value={formData.display_order}
+                    onChange={handleChange}
+                    className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-unleash-orange"
                   />
-                )}
-                <input
-                  type="file"
-                  name="photo"
-                  accept="image/*"
-                  onChange={handleChange}
-                  className="w-full"
-                />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-medium text-unleash-brown">Active</span>
+                  <input
+                    name="is_active"
+                    type="checkbox"
+                    checked={formData.is_active}
+                    onChange={handleChange}
+                    className="mt-3 h-5 w-5 text-unleash-orange"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-medium text-unleash-brown">Photo</span>
+                  <input
+                    name="photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className="mt-2 block w-full text-sm text-gray-600"
+                  />
+                </label>
               </div>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-unleash-orange text-white py-2.5 rounded-lg font-bold hover:bg-unleash-brown transition-colors disabled:opacity-70"
-              >
-                {submitting ? "Saving..." : editId ? "Update Speaker" : "Add Speaker"}
-              </button>
+
+              {formError && <p className="text-sm text-red-600">{formError}</p>}
+
+              <div className="flex flex-col md:flex-row items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-5 py-3 rounded-full border border-gray-200 text-unleash-brown hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="px-5 py-3 rounded-full bg-unleash-orange text-white font-bold hover:bg-unleash-brown disabled:opacity-70"
+                >
+                  {submitting ? "Saving..." : editId ? "Update Speaker" : "Create Speaker"}
+                </button>
+              </div>
             </form>
           </div>
         </div>

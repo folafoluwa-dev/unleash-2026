@@ -1,4 +1,4 @@
-const categories = [
+const defaultCategories = [
   { label: "ALL", value: "all" },
   { label: "WORSHIP", value: "worship" },
   { label: "PREACHING", value: "preaching" },
@@ -6,7 +6,7 @@ const categories = [
   { label: "EVENT MOMENTS", value: "event-moments" },
 ];
 
-const GalleryFilters = ({ activeCategory, onCategoryChange }) => {
+const GalleryFilters = ({ activeCategory, onCategoryChange, categories = defaultCategories}) => {
   return (
     <div className="flex flex-nowrap overflow-x-auto gap-2 px-4 py-4 max-w-6xl mx-auto">
       {categories.map((cat) => (
@@ -27,4 +27,4 @@ const GalleryFilters = ({ activeCategory, onCategoryChange }) => {
   );
 };
 
-export default GalleryFilters;
+export default GalleryFilters

@@ -9,7 +9,7 @@ export const getRegistration = (id) =>
 export const updateRegistrationStatus = (id, status) =>
   axiosInstance.patch(`/api/registrations/admin/${id}/`, { status }).then(res => res.data);
 export const registerAttendee = (data) =>
-  axiosInstance.post('/api/registrations/', data).then(res => res.data);
+  axiosInstance.post('/api/registration/', data).then(res => res.data);
 
 export const lookupRegistration = (registrationId) =>
   axiosInstance.get(`/api/registrations/admin/lookup/${registrationId}/`).then(res => res.data);

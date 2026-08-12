@@ -1,3 +1,4 @@
+import axios from 'axios';  // same endpoint, but backend filters active for anonymous users
 import axiosInstance from './axiosInstance';
 
 // ─── Admin CRUD ────────────────────────────
@@ -24,5 +25,8 @@ export const deleteSpeaker = (id) =>
   axiosInstance.delete(`/api/speakers/${id}/`).then(res => res.data);
 
 // ─── Public (no auth) ─────────────────────
-export const getPublicSpeakers = () =>
-  axiosInstance.get('/api/speakers/');  // same endpoint, but backend filters active for anonymous users
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+export const getPublicSpeakers = async () => {
+  const response = await axios.get(`${API_BASE}/api/speakers/`);
+  return response.data; // <--- Make sure response.data is returned!
+};

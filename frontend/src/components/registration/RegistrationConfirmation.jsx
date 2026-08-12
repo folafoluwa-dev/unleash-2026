@@ -7,6 +7,68 @@ const RegistrationConfirmation = ({ registration, onRegisterAnother }) => {
   const [copyText, setCopyText] = useState("COPY CODE");
   const qrRef = useRef(null); // ref to the QR code canvas
 
+  // Inside RegistrationConfirmation component
+
+const handleShare = async () => {
+  const shareData = {
+    title: "UNLEASH 3.0 Registration",
+    text: `UNLEASH 3.0 Registration\nName: ${registration.full_name}\nRegistration Code: ${registration.registration_id}\n\nPlease keep this code for check-in.`,
+  };
+
+  // Try to include the QR code as a file if the browser supports sharing files
+  try {
+    const canvas = qrRef.current?.querySelector("canvas");
+    if (canvas && navigator.canShare && navigator.canShare({ files: [] })) {
+      // Convert canvas to blob
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Canvas conversion failed"));
+        }, "image/png");
+      });
+
+      const file = new File([blob], `${registration.registration_id}-QR.png`, {
+        type: "image/png",
+      });
+
+      shareData.files = [file];
+    }
+  } catch {
+    // If anything goes wrong, just share text
+  }
+
+  // If Web Share API is available
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      // User cancelled or error – do nothing
+      if (err.name !== "AbortError") {
+        console.error("Share failed:", err);
+        // Fallback to clipboard copy if sharing fails
+        await fallbackCopyToClipboard();
+      }
+    }
+  } else {
+    // Fallback: copy to clipboard
+    await fallbackCopyToClipboard();
+  }
+};
+
+const fallbackCopyToClipboard = async () => {
+  try {
+    const text = `UNLEASH 3.0 Registration\nName: ${registration.full_name}\nRegistration Code: ${registration.registration_id}\nPlease keep this code for check-in.`;
+    await navigator.clipboard.writeText(text);
+    // Show a temporary message (we can use the existing copyText state or a new one)
+    setCopyText("REGISTRATION COPIED!");
+    setTimeout(() => setCopyText("COPY CODE"), 2000);
+  } catch (clipErr) {
+    console.error("Clipboard copy failed:", clipErr);
+    // Last resort: show a message with the code to manually copy
+    alert(`Registration code: ${registration.registration_id}`);
+  }
+};
+
   // Safety check
   if (!registration || typeof registration !== "object") {
     return (
@@ -90,20 +152,6 @@ const RegistrationConfirmation = ({ registration, onRegisterAnother }) => {
 
   const handlePrint = () => {
     window.print();
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "UNLEASH 3.0 Registration",
-          text: `UNLEASH 3.0 Registration Code: ${registration.registration_id}`,
-          url: window.location.href,
-        });
-      } catch {
-        // user cancelled
-      }
-    }
   };
 
   return (

@@ -24,6 +24,10 @@ urlpatterns = [
         "api/",
         include("events.urls"),
     ),
+    path(
+        "api/",
+        include("contact.urls"),
+    ),
 ]
 if settings.DEBUG:
     urlpatterns += static(
