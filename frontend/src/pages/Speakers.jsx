@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Footer from "../components/Footer";
-import SpeakersHero from "../components/speakers/SpeakersHero";
-import SpeakerIntro from "../components/speakers/SpeakerIntro";
-import SpeakerGrid from "../components/speakers/SpeakerGrid";
-import ThemeReminder from "../components/speakers/ThemeReminder";
-import RegistrationCTA from "../components/RegistrationCTA";
+import Footer from "../components/Footer.jsx";
+import SpeakersHero from "../components/speakers/SpeakersHero.jsx";
+import SpeakerIntro from "../components/speakers/SpeakerIntro.jsx";
+import SpeakerGrid from "../components/speakers/SpeakerGrid.jsx";
+import ThemeReminder from "../components/speakers/ThemeReminder.jsx";
+import RegistrationCTA from "../components/Registrationcta.jsx";
 import { getPublicSpeakers } from "../services/speakerService";
 import { getMediaUrl } from "../utils/mediaUtils";
 
