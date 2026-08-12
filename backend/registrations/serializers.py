@@ -37,19 +37,48 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_phone_number(self, value):
-        cleaned = value.replace(" ", "").replace("-", "")
+        cleaned = (
+            value.strip()
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("(", "")
+            .replace(")", "")
+        )
 
-        if not cleaned.isdigit():
-            raise serializers.ValidationError(
-                "Please enter a valid phone number."
-            )
+        # Nigerian local format: 08012345678
+        if cleaned.startswith("0"):
+            if len(cleaned) != 11 or not cleaned.isdigit():
+                raise serializers.ValidationError(
+                    "Please enter a valid Nigerian phone number."
+                )
 
-        if len(cleaned) < 10 or len(cleaned) > 15:
-            raise serializers.ValidationError(
-                "Please enter a valid phone number."
-            )
+            return cleaned
 
-        return value
+        # Nigerian international format: +2348012345678
+        if cleaned.startswith("+234"):
+            number = cleaned[4:]
+
+            if len(number) != 10 or not number.isdigit():
+                raise serializers.ValidationError(
+                    "Please enter a valid Nigerian phone number."
+                )
+
+            return cleaned
+
+        # International format without +
+        if cleaned.startswith("234"):
+            number = cleaned[3:]
+
+            if len(number) != 10 or not number.isdigit():
+                raise serializers.ValidationError(
+                    "Please enter a valid Nigerian phone number."
+                )
+
+            return f"+{cleaned}"
+
+        raise serializers.ValidationError(
+            "Please enter a valid Nigerian phone number."
+        )
     
 class AdminRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
