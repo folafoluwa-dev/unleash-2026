@@ -43,3 +43,8 @@ htmlcov/
 # Temporary files
 *.tmp
 *.temp
+
+.env
+*.pyc
+__pycache__/
+staticfiles/
