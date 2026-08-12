@@ -12,8 +12,8 @@ export const registerAttendee = (data) =>
   axiosInstance.post('/api/registration/', data).then(res => res.data);
 
 export const lookupRegistration = (registrationId) =>
-  axiosInstance.get(`/api/registrations/admin/lookup/${registrationId}/`).then(res => res.data);
+  axiosInstance.get(`/api/admin/lookup/${registrationId}/`).then(res => res.data);
 
 // Check-in an attendee
 export const checkInRegistration = (registrationId) =>
-  axiosInstance.post(`/api/registrations/admin/check-in/${registrationId}/`).then(res => res.data);
+  axiosInstance.post(`/api/admin/check-in/${registrationId}/`).then(res => res.data);
