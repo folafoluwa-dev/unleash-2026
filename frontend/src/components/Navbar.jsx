@@ -69,6 +69,37 @@ const Navbar = () => {
               </svg>
             </button>
           </div>
+          {/* Mobile Navigation */}
+{isMobileMenuOpen && (
+  <nav className="md:hidden pb-6">
+    <div className="flex flex-col gap-4">
+      {navItems.map((item) => (
+        <NavLink
+          key={item.name}
+          to={item.path}
+          onClick={() => setIsMobileMenuOpen(false)}
+          className={({ isActive }) =>
+            `py-2 font-medium transition-colors ${
+              isActive
+                ? "text-[#f97316]"
+                : "text-white hover:text-gray-300"
+            }`
+          }
+        >
+          {item.name}
+        </NavLink>
+      ))}
+
+      <NavLink
+        to="/register"
+        onClick={() => setIsMobileMenuOpen(false)}
+        className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-semibold px-5 py-3 rounded-md text-sm uppercase tracking-wider text-center transition"
+      >
+        REGISTER NOW
+      </NavLink>
+    </div>
+  </nav>
+)}
 
         </div>
       </div>

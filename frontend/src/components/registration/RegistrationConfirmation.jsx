@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { CheckCircle2, Copy, Download, Printer, Share2, Users, QrCode } from "lucide-react";
 import jsPDF from "jspdf";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 const RegistrationConfirmation = ({ registration, onRegisterAnother }) => {
   const [copyText, setCopyText] = useState("COPY CODE");
@@ -176,7 +176,7 @@ const fallbackCopyToClipboard = async () => {
           </p>
           {/* The QR code component with ref for canvas access */}
           <div ref={qrRef} className="flex justify-center mb-4">
-            <QRCodeSVG
+            <QRCodeCanvas
               value={registration.registration_id}
               size={220}
               level="M"
