@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'contact',
     'cloudinary_storage',
+        'cloudinary',
+
     'events',
     'gallery',
     'registrations',
