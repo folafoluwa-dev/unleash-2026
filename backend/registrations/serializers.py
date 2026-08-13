@@ -1,105 +1,81 @@
-from rest_framework import serializers
-from .models import Registration
+from django.db import models
+import uuid
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Registration
-        fields = [
-            "registration_id",
-            "full_name",
-            "email",
-            "phone_number",
-            "age",
-            "city",
-            "additional_information",
-            "status",
-            "registered_at",
-        ]
+class Registration(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("confirmed", "Confirmed"),
+        ("attended", "Attended"),
+        ("cancelled", "Cancelled"),
+    ]
 
-        read_only_fields = [
-            "registration_id",
-            "status",
-            "registered_at",
-        ]
+    registration_id = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False
+    )
 
-    def validate_age(self, value):
-        if value < 1:
-            raise serializers.ValidationError(
-                "Age must be greater than 0."
+    # LOCCI membership
+    is_locci_member = models.BooleanField(
+        default=False
+    )
+
+    locci_branch = models.CharField(
+        max_length=150,
+        blank=True,
+        default=""
+    )
+
+    # Personal information
+    full_name = models.CharField(
+        max_length=150
+    )
+
+    email = models.EmailField()
+
+    phone_number = models.CharField(
+        max_length=20
+    )
+
+    age = models.PositiveIntegerField()
+
+    city = models.CharField(
+        max_length=100
+    )
+
+    additional_information = models.TextField(
+        blank=True,
+        default=""
+    )
+
+    # Registration status
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending"
+    )
+
+    registered_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.registration_id:
+            year = 2026
+            unique_part = uuid.uuid4().hex[:8].upper()
+
+            self.registration_id = (
+                f"UNL-{year}-{unique_part}"
             )
 
-        if value > 120:
-            raise serializers.ValidationError(
-                "Please enter a valid age."
-            )
+        super().save(*args, **kwargs)
 
-        return value
-
-    def validate_phone_number(self, value):
-        cleaned = (
-            value.strip()
-            .replace(" ", "")
-            .replace("-", "")
-            .replace("(", "")
-            .replace(")", "")
+    def __str__(self):
+        return (
+            f"{self.registration_id} - {self.full_name}"
         )
-
-        # Nigerian local format: 08012345678
-        if cleaned.startswith("0"):
-            if len(cleaned) != 11 or not cleaned.isdigit():
-                raise serializers.ValidationError(
-                    "Please enter a valid Nigerian phone number."
-                )
-
-            return cleaned
-
-        # Nigerian international format: +2348012345678
-        if cleaned.startswith("+234"):
-            number = cleaned[4:]
-
-            if len(number) != 10 or not number.isdigit():
-                raise serializers.ValidationError(
-                    "Please enter a valid Nigerian phone number."
-                )
-
-            return cleaned
-
-        # International format without +
-        if cleaned.startswith("234"):
-            number = cleaned[3:]
-
-            if len(number) != 10 or not number.isdigit():
-                raise serializers.ValidationError(
-                    "Please enter a valid Nigerian phone number."
-                )
-
-            return f"+{cleaned}"
-
-        raise serializers.ValidationError(
-            "Please enter a valid Nigerian phone number."
-        )
-    
-class AdminRegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Registration
-        fields = [
-            "id",
-            "registration_id",
-            "full_name",
-            "email",
-            "phone_number",
-            "age",
-            "city",
-            "additional_information",
-            "status",
-            "registered_at",
-            "updated_at",
-        ]
-
-        read_only_fields = [
-            "id",
-            "registration_id",
-            "registered_at",
-            "updated_at",
-        ]

@@ -9,13 +9,18 @@ class Registration(models.Model):
         ("attended", "Attended"),
         ("cancelled", "Cancelled"),
     ]
-
     registration_id = models.CharField(
         max_length=20,
         unique=True,
         editable=False
     )
+    is_locci_member = models.BooleanField(default=False)
 
+    locci_branch = models.CharField(
+        max_length=150,
+        blank=True,
+        default=""
+    )
     full_name = models.CharField(max_length=150)
 
     email = models.EmailField()

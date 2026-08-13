@@ -9,6 +9,7 @@ import { getEventSettings } from "../services/eventSettingsService";
 
 const getInitialRegistration = () => {
   if (typeof window === "undefined") return null;
+
   try {
     const stored = window.localStorage.getItem("registration");
     return stored ? JSON.parse(stored) : null;
@@ -18,39 +19,54 @@ const getInitialRegistration = () => {
 };
 
 const RegisterPage = () => {
-  const [registration, setRegistration] = useState(getInitialRegistration);
-  const [step, setStep] = useState(() => (registration ? "confirmation" : "form"));
-  const [registrationOpen, setRegistrationOpen] = useState(null); // null = loading
+  const [registration, setRegistration] =
+    useState(getInitialRegistration);
+
+  const [step, setStep] = useState(() =>
+    registration ? "confirmation" : "form"
+  );
+
+  const [registrationOpen, setRegistrationOpen] =
+    useState(null);
 
   useEffect(() => {
     const checkRegistrationStatus = async () => {
       try {
         const settings = await getEventSettings();
-        setRegistrationOpen(settings.registration_open);
+
+        setRegistrationOpen(
+          settings.registration_open
+        );
       } catch {
-        setRegistrationOpen(false); // fallback closed
+        setRegistrationOpen(false);
       }
     };
+
     checkRegistrationStatus();
   }, []);
 
   const handleRegistrationSuccess = (regData) => {
     setRegistration(regData);
     setStep("confirmation");
+
     try {
-      window.localStorage.setItem("registration", JSON.stringify(regData));
+      window.localStorage.setItem(
+        "registration",
+        JSON.stringify(regData)
+      );
     } catch {
-      // ignore localStorage errors
+      // Ignore localStorage errors
     }
   };
 
   const handleRegisterAnother = () => {
     setRegistration(null);
     setStep("form");
+
     try {
       window.localStorage.removeItem("registration");
     } catch {
-      // ignore localStorage errors
+      // Ignore localStorage errors
     }
   };
 
@@ -58,27 +74,38 @@ const RegisterPage = () => {
     <>
       <main>
         <RegistrationHero />
+
         <EventSummary />
+
         <HowRegistrationWorks />
 
         {registrationOpen === null ? (
-          <div className="text-center py-12">Loading...</div>
+          <div className="text-center py-12">
+            Loading...
+          </div>
         ) : step === "confirmation" && registration ? (
           <RegistrationConfirmation
             registration={registration}
             onRegisterAnother={handleRegisterAnother}
           />
         ) : step === "form" && registrationOpen ? (
-          <RegistrationForm onSuccess={handleRegistrationSuccess} />
+          <RegistrationForm
+            onSuccess={handleRegistrationSuccess}
+          />
         ) : step === "form" && !registrationOpen ? (
           <div className="py-16 text-center max-w-2xl mx-auto px-4">
-            <h2 className="font-display text-4xl text-unleash-brown mb-4">Registration Closed</h2>
+            <h2 className="font-display text-4xl text-unleash-brown mb-4">
+              Registration Closed
+            </h2>
+
             <p className="text-lg text-unleash-brown/80">
-              Registration for UNLEASH 3.0 has ended. Thank you for your interest.
+              Registration for UNLEASH 3.0 has ended.
+              Thank you for your interest.
             </p>
           </div>
         ) : null}
       </main>
+
       <Footer />
     </>
   );
