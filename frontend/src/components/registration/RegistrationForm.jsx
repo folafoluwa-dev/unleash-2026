@@ -429,8 +429,8 @@ const RegistrationForm = ({
                 <option value="18-25">18–25</option>
                 <option value="26-35">26–35</option>
                 <option value="36-45">36–45</option>
-                <option value="46-55">46–55</option>
-                <option value="56+">56+</option>
+                {/* <option value="46-55">46–55</option>
+                <option value="56+">56+</option> */}
               </select>
 
               {errors.age_group && (
