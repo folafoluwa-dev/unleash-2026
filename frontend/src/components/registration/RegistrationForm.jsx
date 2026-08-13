@@ -36,14 +36,15 @@ const LOCCI_BRANCHES = [
   "EJIGBO Branch",
   "ISALE-EKO Branch",
 ];
-
 const initialFormData = {
   fullName: "",
   email: "",
   phone: "",
-  age: "",
+  age_group: "",
   city: "",
   additionalInformation: "",
+  isLocciMember: false,
+  locciBranch: "",
 };
 
 const validate = (
@@ -279,30 +280,16 @@ const RegistrationForm = ({
 
     try {
       const payload = {
-        full_name:
-          formData.fullName.trim(),
-
-        email:
-          formData.email.trim(),
-
-        phone_number:
-          formData.phone.trim(),
-
-        age_group: formData.ageGroup,
-
-        city:
-          formData.city.trim(),
-
-        additional_information:
-          formData.additionalInformation.trim(),
-
-        is_locci_member:
-          isLocciMember,
-
-        locci_branch:
-          isLocciMember
-            ? locciBranch
-            : "",
+        full_name: formData.fullName,
+        email: formData.email,
+        phone_number: formData.phone,
+        age_group: formData.age_group,
+        city: formData.city,
+        additional_information: formData.additionalInformation,
+        is_locci_member: formData.isLocciMember,
+        locci_branch: formData.isLocciMember
+          ? formData.locciBranch
+          : "",
       };
 
       console.log(
@@ -418,24 +405,40 @@ const RegistrationForm = ({
             />
 
             {/* Age */}
-            <FormField
-              label="Age Group"
-              name="ageGroup"
-              type="select"
-              value={formData.ageGroup}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.ageGroup}
-              required
-              options={[
-                { value: "13-17", label: "13–17" },
-                { value: "18-25", label: "18–25" },
-                { value: "26-35", label: "26–35" },
-                { value: "36-45", label: "36–45" },
-                { value: "46-55", label: "46–55" },
-                { value: "56+", label: "56+" },
-              ]}
-            />
+            <div>
+              <label
+                htmlFor="age_group"
+                className="block text-sm font-semibold text-unleash-brown mb-2"
+              >
+                Age Group <span className="text-red-500">*</span>
+              </label>
+
+              <select
+                id="age_group"
+                name="age_group"
+                value={formData.age_group}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full px-4 py-3 border rounded-lg bg-white text-unleash-brown focus:outline-none focus:ring-2 focus:ring-unleash-orange ${errors.age_group
+                  ? "border-red-500"
+                  : "border-gray-300"
+                  }`}
+              >
+                <option value="">Select your age group</option>
+                <option value="13-17">13–17</option>
+                <option value="18-25">18–25</option>
+                <option value="26-35">26–35</option>
+                <option value="36-45">36–45</option>
+                <option value="46-55">46–55</option>
+                <option value="56+">56+</option>
+              </select>
+
+              {errors.age_group && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.age_group}
+                </p>
+              )}
+            </div>
 
             {/* City */}
             <div className="md:col-span-2">
@@ -467,8 +470,8 @@ const RegistrationForm = ({
                   {/* YES */}
                   <label
                     className={`relative flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${isLocciMember === true
-                        ? "border-unleash-orange bg-orange-50 ring-2 ring-unleash-orange/20"
-                        : "border-gray-200 hover:border-unleash-orange/50"
+                      ? "border-unleash-orange bg-orange-50 ring-2 ring-unleash-orange/20"
+                      : "border-gray-200 hover:border-unleash-orange/50"
                       }`}
                   >
                     <input
@@ -492,8 +495,8 @@ const RegistrationForm = ({
                   {/* NO */}
                   <label
                     className={`relative flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${isLocciMember === false
-                        ? "border-unleash-orange bg-orange-50 ring-2 ring-unleash-orange/20"
-                        : "border-gray-200 hover:border-unleash-orange/50"
+                      ? "border-unleash-orange bg-orange-50 ring-2 ring-unleash-orange/20"
+                      : "border-gray-200 hover:border-unleash-orange/50"
                       }`}
                   >
                     <input
@@ -544,8 +547,8 @@ const RegistrationForm = ({
                   onChange={handleBranchChange}
                   onBlur={handleBlur}
                   className={`w-full px-4 py-3.5 rounded-lg border bg-white text-unleash-brown outline-none transition-all ${errors.locciBranch
-                      ? "border-red-500 focus:ring-2 focus:ring-red-200"
-                      : "border-gray-300 focus:border-unleash-orange focus:ring-2 focus:ring-orange-100"
+                    ? "border-red-500 focus:ring-2 focus:ring-red-200"
+                    : "border-gray-300 focus:border-unleash-orange focus:ring-2 focus:ring-orange-100"
                     }`}
                 >
                   <option value="">
