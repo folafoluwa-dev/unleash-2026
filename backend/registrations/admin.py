@@ -9,15 +9,19 @@ class RegistrationAdmin(admin.ModelAdmin):
         "full_name",
         "email",
         "phone_number",
-        "age",
+        "age_group",
         "city",
+        "is_locci_member",
+        "locci_branch",
         "status",
         "registered_at",
     )
 
     list_filter = (
         "status",
-        "city",
+        "age_group",
+        "is_locci_member",
+        "locci_branch",
         "registered_at",
     )
 
@@ -26,12 +30,14 @@ class RegistrationAdmin(admin.ModelAdmin):
         "full_name",
         "email",
         "phone_number",
+        "city",
+        "locci_branch",
     )
+
+    ordering = ("-registered_at",)
 
     readonly_fields = (
         "registration_id",
         "registered_at",
         "updated_at",
     )
-
-    ordering = ("-registered_at",)
