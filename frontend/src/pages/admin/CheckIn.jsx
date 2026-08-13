@@ -521,7 +521,7 @@ export default function CheckIn() {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-gray-400" />
 
-                  <span>Age: {registration.age}</span>
+                  <span>Age: {registration.age_group}</span>
                 </div>
 
                 <div>

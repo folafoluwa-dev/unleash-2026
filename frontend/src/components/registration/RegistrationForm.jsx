@@ -95,18 +95,18 @@ const validate = (
   }
 
   // Age
-  if (!formData.age) {
-    errors.age =
+  if (!formData.age_group) {
+    errors.age_group =
       "Please enter your age.";
   } else {
-    const ageNum = Number(formData.age);
+    const ageNum = Number(formData.age_group);
 
     if (
       isNaN(ageNum) ||
       ageNum < 13 ||
       ageNum > 100
     ) {
-      errors.age =
+      errors.age_group =
         "Age must be between 13 and 100.";
     }
   }

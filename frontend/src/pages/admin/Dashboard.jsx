@@ -123,7 +123,7 @@ export default function Dashboard() {
                     <td className="p-3 font-mono text-xs">{reg.registration_id}</td>
                     <td className="p-3">{reg.full_name}</td>
                     <td className="p-3">{reg.email}</td>
-                    <td className="p-3">{reg.age}</td>
+                    <td className="p-3">{reg.age_group}</td>
                     <td className="p-3">{reg.city}</td>
                     <td className="p-3">
                       <span

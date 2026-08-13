@@ -109,11 +109,9 @@ class AdminRegistrationSerializer(serializers.ModelSerializer):
             "id",
             "registration_id",
 
-            # LOCCI information
             "is_locci_member",
             "locci_branch",
 
-            # Personal information
             "full_name",
             "email",
             "phone_number",
@@ -121,7 +119,6 @@ class AdminRegistrationSerializer(serializers.ModelSerializer):
             "city",
             "additional_information",
 
-            # Registration information
             "status",
             "registered_at",
             "updated_at",

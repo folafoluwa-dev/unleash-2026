@@ -172,7 +172,7 @@ export default function Registrations() {
       r.full_name,
       r.email,
       r.phone_number ?? "",
-      r.age,
+      r.age_group,
       r.city,
       r.status,
       new Date(r.registered_at).toLocaleString(),
@@ -335,7 +335,7 @@ export default function Registrations() {
                 <td className="p-3 whitespace-nowrap">{reg.full_name}</td>
                 <td className="p-3 hidden md:table-cell">{reg.email}</td>
                 <td className="p-3 hidden md:table-cell">{reg.phone_number || "—"}</td>
-                <td className="p-3">{reg.age}</td>
+                <td className="p-3">{reg.age_group}</td>
                 <td className="p-3 hidden sm:table-cell">{reg.city}</td>
                 <td className="p-3 whitespace-nowrap">{statusBadge(reg.status)}</td>
                 <td className="p-3 hidden lg:table-cell text-gray-500 whitespace-nowrap">
@@ -438,7 +438,7 @@ export default function Registrations() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Age</p>
-                    <p>{detailData.age}</p>
+                    <p>{detailData.age_group}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">City</p>
