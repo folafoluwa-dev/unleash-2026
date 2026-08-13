@@ -15,8 +15,8 @@ import RegistrationCTA from "../components/Registrationcta.jsx";
 
 // Reusable sub-components for this page
 const EventHero = () => (
-  <section className="relative bg-unleash-cream overflow-hidden">
-    <div className="absolute top-0 right-0 w-1/2 h-full bg-unleash-orange/5 rounded-bl-[80px]" />
+<section class="relative bg-unleash-cream overflow-hidden w-full">
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-unleash-orange/5 rounded-bl-[80px]" />
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
       <div className="relative text-center md:text-left">
         <p className="text-sm md:text-base font-semibold text-unleash-orange tracking-widest uppercase mb-3">

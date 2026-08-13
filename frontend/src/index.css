@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
 
+* {
+  box-sizing: border-box;
+}
 @theme {
   --color-unleash-brown: #3a1b0b;
   --color-unleash-dark-brown: #241108;

@@ -16,8 +16,8 @@ const Hero = () => {
   const venue = settings?.venue || "King's Court Assembly";
   const address = settings?.address || 'Ojodu Berger, Lagos';
   return (
-    <section className="relative bg-unleash-cream overflow-hidden">
-      {/* Subtle decorative shapes */}
+<section class="relative bg-unleash-cream overflow-hidden w-full">
+        {/* Subtle decorative shapes */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-unleash-orange/5 rounded-bl-[100px]" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-unleash-orange/10 rounded-tr-full" />
 

@@ -2,8 +2,8 @@ import { Calendar, Clock, MapPin } from "lucide-react";
 
 const RegistrationHero = () => {
   return (
-    <section className="relative bg-unleash-cream overflow-hidden py-16 md:py-20">
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-unleash-orange/5 rounded-bl-[80px]" />
+<section class="relative bg-unleash-cream overflow-hidden w-full">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-unleash-orange/5 rounded-bl-[80px]" />
       <div className="max-w-4xl mx-auto px-4 text-center relative">
         <p className="text-sm md:text-base font-semibold text-unleash-orange tracking-widest uppercase mb-2">
           FREE REGISTRATION

@@ -3,8 +3,8 @@ import churchLogo from '../../assets/logo/love-of-christ-logo.svg';
 
 const ChurchHero = () => {
   return (
-    <section className="relative bg-unleash-cream overflow-hidden py-20 md:py-28">
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-unleash-orange/5 rounded-bl-[80px]" />
+<section class="relative bg-unleash-cream overflow-hidden w-full">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-unleash-orange/5 rounded-bl-[80px]" />
       <div className="max-w-5xl mx-auto px-4 text-center relative">
         <img
           src={churchLogo}
