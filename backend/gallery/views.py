@@ -21,16 +21,51 @@ def gallery_list(request):
         return Response(serializer.data)
 
     # POST
+    # POST
     if not (request.user and request.user.is_staff):
         return Response(
-            {'detail': 'Authentication credentials were not provided or unauthorized.'},
+            {
+                "detail": "Authentication credentials were not provided or unauthorized."
+            },
             status=status.HTTP_403_FORBIDDEN,
         )
 
     serializer = AdminMediaSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    if not serializer.is_valid():
+        return Response(
+            {
+                "detail": "Validation failed",
+                "errors": serializer.errors,
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        instance = serializer.save()
+
+    except Exception as e:
+        import traceback
+
+        error = traceback.format_exc()
+
+        print("========== GALLERY UPLOAD ERROR ==========")
+        print(error)
+        print("===========================================")
+
+        return Response(
+            {
+                "detail": "Gallery upload failed",
+                "error": str(e),
+                "traceback": error,
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    return Response(
+        AdminMediaSerializer(instance).data,
+        status=status.HTTP_201_CREATED,
+    )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
