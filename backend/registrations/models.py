@@ -42,9 +42,10 @@ class Registration(models.Model):
     phone_number = models.CharField(max_length=20)
 
     age_group = models.CharField(
-        max_length=10,
-        choices=AGE_GROUP_CHOICES
-    )
+    max_length=10,
+    choices=AGE_GROUP_CHOICES,
+    default="18-25"
+)
 
     city = models.CharField(max_length=100)
 
