@@ -27,8 +27,20 @@ class Registration(models.Model):
 
     phone_number = models.CharField(max_length=20)
 
-    age = models.PositiveIntegerField()
+    AGE_GROUP_CHOICES = [
+        ("13-17", "13–17"),
+        ("18-25", "18–25"),
+        ("26-35", "26–35"),
+        ("36-45", "36–45"),
+        ("46-55", "46–55"),
+        ("56+", "56+"),
+    ]
 
+    age_group = models.CharField(
+        max_length=10,
+        choices=AGE_GROUP_CHOICES
+    )
+    
     city = models.CharField(max_length=100)
 
     additional_information = models.TextField(

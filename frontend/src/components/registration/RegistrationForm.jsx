@@ -288,8 +288,7 @@ const RegistrationForm = ({
         phone_number:
           formData.phone.trim(),
 
-        age:
-          Number(formData.age),
+        age_group: formData.ageGroup,
 
         city:
           formData.city.trim(),
@@ -420,17 +419,22 @@ const RegistrationForm = ({
 
             {/* Age */}
             <FormField
-              label="Age"
-              name="age"
-              type="number"
-              value={formData.age}
+              label="Age Group"
+              name="ageGroup"
+              type="select"
+              value={formData.ageGroup}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={errors.age}
+              error={errors.ageGroup}
               required
-              min={13}
-              max={100}
-              placeholder="13"
+              options={[
+                { value: "13-17", label: "13–17" },
+                { value: "18-25", label: "18–25" },
+                { value: "26-35", label: "26–35" },
+                { value: "36-45", label: "36–45" },
+                { value: "46-55", label: "46–55" },
+                { value: "56+", label: "56+" },
+              ]}
             />
 
             {/* City */}
@@ -462,11 +466,10 @@ const RegistrationForm = ({
 
                   {/* YES */}
                   <label
-                    className={`relative flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
-                      isLocciMember === true
+                    className={`relative flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${isLocciMember === true
                         ? "border-unleash-orange bg-orange-50 ring-2 ring-unleash-orange/20"
                         : "border-gray-200 hover:border-unleash-orange/50"
-                    }`}
+                      }`}
                   >
                     <input
                       type="radio"
@@ -488,11 +491,10 @@ const RegistrationForm = ({
 
                   {/* NO */}
                   <label
-                    className={`relative flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
-                      isLocciMember === false
+                    className={`relative flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${isLocciMember === false
                         ? "border-unleash-orange bg-orange-50 ring-2 ring-unleash-orange/20"
                         : "border-gray-200 hover:border-unleash-orange/50"
-                    }`}
+                      }`}
                   >
                     <input
                       type="radio"
@@ -541,11 +543,10 @@ const RegistrationForm = ({
                   value={locciBranch}
                   onChange={handleBranchChange}
                   onBlur={handleBlur}
-                  className={`w-full px-4 py-3.5 rounded-lg border bg-white text-unleash-brown outline-none transition-all ${
-                    errors.locciBranch
+                  className={`w-full px-4 py-3.5 rounded-lg border bg-white text-unleash-brown outline-none transition-all ${errors.locciBranch
                       ? "border-red-500 focus:ring-2 focus:ring-red-200"
                       : "border-gray-300 focus:border-unleash-orange focus:ring-2 focus:ring-orange-100"
-                  }`}
+                    }`}
                 >
                   <option value="">
                     Select your branch

@@ -59,18 +59,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def validate_age(self, value):
-        if value < 1:
-            raise serializers.ValidationError(
-                "Age must be greater than 0."
-            )
-
-        if value > 120:
-            raise serializers.ValidationError(
-                "Please enter a valid age."
-            )
-
-        return value
+    age_group = serializers.ChoiceField(
+    choices=[
+        ("13-17", "13–17"),
+        ("18-25", "18–25"),
+        ("26-35", "26–35"),
+        ("36-45", "36–45"),
+        ("46-55", "46–55"),
+        ("56+", "56+"),
+    ]
+)
 
     def validate_phone_number(self, value):
         cleaned = (
