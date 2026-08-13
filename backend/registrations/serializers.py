@@ -1,81 +1,154 @@
-from django.db import models
-import uuid
+from rest_framework import serializers
+from .models import Registration
 
 
-class Registration(models.Model):
-    STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("confirmed", "Confirmed"),
-        ("attended", "Attended"),
-        ("cancelled", "Cancelled"),
-    ]
+class RegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
 
-    registration_id = models.CharField(
-        max_length=20,
-        unique=True,
-        editable=False
-    )
+        fields = [
+            "registration_id",
 
-    # LOCCI membership
-    is_locci_member = models.BooleanField(
-        default=False
-    )
+            # LOCCI information
+            "is_locci_member",
+            "locci_branch",
 
-    locci_branch = models.CharField(
-        max_length=150,
-        blank=True,
-        default=""
-    )
+            # Personal information
+            "full_name",
+            "email",
+            "phone_number",
+            "age",
+            "city",
+            "additional_information",
 
-    # Personal information
-    full_name = models.CharField(
-        max_length=150
-    )
+            # Registration information
+            "status",
+            "registered_at",
+        ]
 
-    email = models.EmailField()
+        read_only_fields = [
+            "registration_id",
+            "status",
+            "registered_at",
+        ]
 
-    phone_number = models.CharField(
-        max_length=20
-    )
+    def validate(self, attrs):
+        is_locci_member = attrs.get(
+            "is_locci_member",
+            False
+        )
 
-    age = models.PositiveIntegerField()
+        locci_branch = attrs.get(
+            "locci_branch",
+            ""
+        ).strip()
 
-    city = models.CharField(
-        max_length=100
-    )
+        # If the person is from LOCCI,
+        # they must select a branch.
+        if is_locci_member and not locci_branch:
+            raise serializers.ValidationError({
+                "locci_branch": (
+                    "Please select your LOCCI branch."
+                )
+            })
 
-    additional_information = models.TextField(
-        blank=True,
-        default=""
-    )
+        # If the person is not from LOCCI,
+        # make sure no branch is stored.
+        if not is_locci_member:
+            attrs["locci_branch"] = ""
 
-    # Registration status
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default="pending"
-    )
+        return attrs
 
-    registered_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
-
-    def save(self, *args, **kwargs):
-        if not self.registration_id:
-            year = 2026
-            unique_part = uuid.uuid4().hex[:8].upper()
-
-            self.registration_id = (
-                f"UNL-{year}-{unique_part}"
+    def validate_age(self, value):
+        if value < 1:
+            raise serializers.ValidationError(
+                "Age must be greater than 0."
             )
 
-        super().save(*args, **kwargs)
+        if value > 120:
+            raise serializers.ValidationError(
+                "Please enter a valid age."
+            )
 
-    def __str__(self):
-        return (
-            f"{self.registration_id} - {self.full_name}"
+        return value
+
+    def validate_phone_number(self, value):
+        cleaned = (
+            value.strip()
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("(", "")
+            .replace(")", "")
         )
+
+        # Nigerian local format
+        # Example: 08012345678
+        if cleaned.startswith("0"):
+            if len(cleaned) != 11 or not cleaned.isdigit():
+                raise serializers.ValidationError(
+                    "Please enter a valid Nigerian phone number."
+                )
+
+            return cleaned
+
+        # Nigerian international format
+        # Example: +2348012345678
+        if cleaned.startswith("+234"):
+            number = cleaned[4:]
+
+            if len(number) != 10 or not number.isdigit():
+                raise serializers.ValidationError(
+                    "Please enter a valid Nigerian phone number."
+                )
+
+            return cleaned
+
+        # International format without +
+        # Example: 2348012345678
+        if cleaned.startswith("234"):
+            number = cleaned[3:]
+
+            if len(number) != 10 or not number.isdigit():
+                raise serializers.ValidationError(
+                    "Please enter a valid Nigerian phone number."
+                )
+
+            return f"+{cleaned}"
+
+        raise serializers.ValidationError(
+            "Please enter a valid Nigerian phone number."
+        )
+
+
+class AdminRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
+
+        fields = [
+            "id",
+            "registration_id",
+
+            # LOCCI information
+            "is_locci_member",
+            "locci_branch",
+
+            # Personal information
+            "full_name",
+            "email",
+            "phone_number",
+            "age",
+            "city",
+            "additional_information",
+
+            # Registration information
+            "status",
+            "registered_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "registration_id",
+            "registered_at",
+            "updated_at",
+        ]
