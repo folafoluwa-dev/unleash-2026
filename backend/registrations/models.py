@@ -9,23 +9,6 @@ class Registration(models.Model):
         ("attended", "Attended"),
         ("cancelled", "Cancelled"),
     ]
-    registration_id = models.CharField(
-        max_length=20,
-        unique=True,
-        editable=False
-    )
-    is_locci_member = models.BooleanField(default=False)
-
-    locci_branch = models.CharField(
-        max_length=150,
-        blank=True,
-        default=""
-    )
-    full_name = models.CharField(max_length=150)
-
-    email = models.EmailField()
-
-    phone_number = models.CharField(max_length=20)
 
     AGE_GROUP_CHOICES = [
         ("13-17", "13–17"),
@@ -36,11 +19,33 @@ class Registration(models.Model):
         ("56+", "56+"),
     ]
 
+    registration_id = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False
+    )
+
+    # LOCCI information
+    is_locci_member = models.BooleanField(default=False)
+
+    locci_branch = models.CharField(
+        max_length=150,
+        blank=True,
+        default=""
+    )
+
+    # Personal information
+    full_name = models.CharField(max_length=150)
+
+    email = models.EmailField()
+
+    phone_number = models.CharField(max_length=20)
+
     age_group = models.CharField(
         max_length=10,
         choices=AGE_GROUP_CHOICES
     )
-    
+
     city = models.CharField(max_length=100)
 
     additional_information = models.TextField(
@@ -48,6 +53,7 @@ class Registration(models.Model):
         default=""
     )
 
+    # Registration information
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,

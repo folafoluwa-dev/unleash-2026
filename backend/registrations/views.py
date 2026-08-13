@@ -1,22 +1,23 @@
-from rest_framework import generics,permissions,status
+from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
-from .models import Registration
-from .serializers import RegistrationSerializer,AdminRegistrationSerializer
-from rest_framework.permissions import AllowAny,IsAdminUser
-from django.db.models import Count
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from django.db.models import Count
 from django.db import models
 
+from .models import Registration
+from .serializers import (
+    RegistrationSerializer,
+    AdminRegistrationSerializer,
+)
+
+
 class RegistrationCreateView(generics.CreateAPIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
     queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
-    
-class AdminRegistrationListView(generics.ListAPIView):
-    queryset = Registration.objects.all()
-    serializer_class = AdminRegistrationSerializer
-    permission_classes = [IsAdminUser]
-    
+
+
 class AdminRegistrationListView(generics.ListAPIView):
     queryset = Registration.objects.all().order_by("-registered_at")
     serializer_class = AdminRegistrationSerializer
@@ -57,6 +58,7 @@ class AdminRegistrationStatsView(APIView):
 
         return Response(stats)
 
+
 class AdminRegistrationLookupView(APIView):
     permission_classes = [permissions.IsAdminUser]
 
@@ -76,7 +78,8 @@ class AdminRegistrationLookupView(APIView):
         serializer = AdminRegistrationSerializer(registration)
 
         return Response(serializer.data)
-    
+
+
 class AdminRegistrationCheckInView(APIView):
     permission_classes = [permissions.IsAdminUser]
 
@@ -96,7 +99,10 @@ class AdminRegistrationCheckInView(APIView):
         if registration.status == "cancelled":
             return Response(
                 {
-                    "detail": "Cancelled registrations cannot be checked in."
+                    "detail": (
+                        "Cancelled registrations cannot "
+                        "be checked in."
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -106,7 +112,10 @@ class AdminRegistrationCheckInView(APIView):
 
             return Response(
                 {
-                    "detail": "This attendee has already been checked in.",
+                    "detail": (
+                        "This attendee has already "
+                        "been checked in."
+                    ),
                     "already_checked_in": True,
                     "registration": serializer.data,
                 },

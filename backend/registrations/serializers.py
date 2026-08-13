@@ -17,7 +17,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "full_name",
             "email",
             "phone_number",
-            "age",
+            "age_group",
             "city",
             "additional_information",
 
@@ -43,32 +43,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
             ""
         ).strip()
 
-        # If the person is from LOCCI,
-        # they must select a branch.
         if is_locci_member and not locci_branch:
             raise serializers.ValidationError({
-                "locci_branch": (
-                    "Please select your LOCCI branch."
-                )
+                "locci_branch": "Please select your LOCCI branch."
             })
 
-        # If the person is not from LOCCI,
-        # make sure no branch is stored.
         if not is_locci_member:
             attrs["locci_branch"] = ""
 
         return attrs
-
-    age_group = serializers.ChoiceField(
-    choices=[
-        ("13-17", "13–17"),
-        ("18-25", "18–25"),
-        ("26-35", "26–35"),
-        ("36-45", "36–45"),
-        ("46-55", "46–55"),
-        ("56+", "56+"),
-    ]
-)
 
     def validate_phone_number(self, value):
         cleaned = (
@@ -80,7 +63,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         )
 
         # Nigerian local format
-        # Example: 08012345678
+        # 08012345678
         if cleaned.startswith("0"):
             if len(cleaned) != 11 or not cleaned.isdigit():
                 raise serializers.ValidationError(
@@ -90,7 +73,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             return cleaned
 
         # Nigerian international format
-        # Example: +2348012345678
+        # +2348012345678
         if cleaned.startswith("+234"):
             number = cleaned[4:]
 
@@ -102,7 +85,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             return cleaned
 
         # International format without +
-        # Example: 2348012345678
+        # 2348012345678
         if cleaned.startswith("234"):
             number = cleaned[3:]
 
@@ -134,7 +117,7 @@ class AdminRegistrationSerializer(serializers.ModelSerializer):
             "full_name",
             "email",
             "phone_number",
-            "age",
+            "age_group",
             "city",
             "additional_information",
 
