@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv 
 from datetime import timedelta
-import cloudinary
 
 load_dotenv()  # Load environment variables from .env file
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,11 +19,6 @@ DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',') if os.getenv('ALLOWED_HOSTS') else []
 
-
-CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
-
-if CLOUDINARY_URL:
-    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
 
 # Application definition
 
@@ -47,6 +41,11 @@ INSTALLED_APPS = [
     'speakers',
 ]
 
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
 
 STORAGES = {
     "default": {
