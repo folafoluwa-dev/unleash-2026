@@ -9,8 +9,8 @@ from .serializers import MediaSerializer, AdminMediaSerializer
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
 @parser_classes([MultiPartParser, FormParser])
+@permission_classes([AllowAny])
 def gallery_list(request):
     if request.method == 'GET':
         if request.user and request.user.is_staff:
