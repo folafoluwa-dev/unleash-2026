@@ -19,10 +19,13 @@ import ContactPage from "./pages/Contact.jsx";
 import Navbar from "./components/Navbar.jsx";
 import CheckIn from "./pages/admin/CheckIn.jsx";
 import Settings from './pages/admin/Settings.jsx';
+import PageTitle from "./components/PageTitle.jsx";
 
 function App() {
   return (
     <BrowserRouter>
+    <PageTitle>
+
       <AuthProvider>
         <Navbar />
         <Routes>
@@ -51,6 +54,7 @@ function App() {
           </Route>
         </Routes>
       </AuthProvider>
+    </PageTitle>
     </BrowserRouter>
   );
 }
