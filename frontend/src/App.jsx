@@ -24,7 +24,7 @@ import PageTitle from "./components/PageTitle.jsx";
 function App() {
   return (
     <BrowserRouter>
-    <PageTitle>
+    <PageTitle />
 
       <AuthProvider>
         <Navbar />
@@ -54,7 +54,6 @@ function App() {
           </Route>
         </Routes>
       </AuthProvider>
-    </PageTitle>
     </BrowserRouter>
   );
 }
