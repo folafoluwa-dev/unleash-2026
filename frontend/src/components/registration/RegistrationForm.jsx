@@ -2,7 +2,7 @@ import { useState } from "react";
 import FormField from "./FormField.jsx";
 import { registerAttendee } from "../../services/registrationService.js";
 
-const LOCCI_BRANCHES = [
+const LOCI_BRANCHES = [
   "THRONE OF MERCY, Oregun",
   "KING’S COURT ASSEMBLY, Olowoira",
   "Headquater, Alapere, ketu, Lagos",
@@ -24,7 +24,7 @@ const LOCCI_BRANCHES = [
   "OVERCOMERS ASSEMBLY, Mowe",
   "Ado Ekiti Branch",
   "KINGDOM OF GRACE, Ijegun",
-  "AKURE Branch",
+  "AKURE branch",
   "OGBOMOSO Branch",
   "Spring of Mercy Itamaga, Ikorodu",
   "ABEOKUTA Branch",
@@ -71,30 +71,10 @@ const validate = (formData) => {
   if (!formData.phone) {
     errors.phone = "Please enter your phone number.";
   } else {
-    const cleaned = formData.phone
-      .replace(/\s+/g, "")
-      .replace(/-/g, "")
-      .replace(/\(/g, "")
-      .replace(/\)/g, "");
+    const cleaned = formData.phone.replace(/\s+/g, "");
 
-    if (
-      !cleaned.startsWith("0") &&
-      !cleaned.startsWith("+234") &&
-      !cleaned.startsWith("234")
-    ) {
+    if (!/^(\+234|0)[789]\d{9}$/.test(cleaned)) {
       errors.phone = "Please enter a valid Nigerian phone number.";
-    } else if (cleaned.startsWith("0")) {
-      if (!/^0[789]\d{9}$/.test(cleaned)) {
-        errors.phone = "Please enter a valid Nigerian phone number.";
-      }
-    } else if (cleaned.startsWith("+234")) {
-      if (!/^\+234[789]\d{9}$/.test(cleaned)) {
-        errors.phone = "Please enter a valid Nigerian phone number.";
-      }
-    } else if (cleaned.startsWith("234")) {
-      if (!/^234[789]\d{9}$/.test(cleaned)) {
-        errors.phone = "Please enter a valid Nigerian phone number.";
-      }
     }
   }
 
@@ -106,7 +86,7 @@ const validate = (formData) => {
     errors.city = "Please enter your city or location.";
   }
 
-  if (!formData.isLocciMember) {
+  if (formData.isLocciMember === "") {
     errors.isLocciMember = "Please select whether you are from LOCCI.";
   }
 
@@ -132,7 +112,7 @@ const RegistrationForm = ({ onSuccess }) => {
         [name]: value,
       };
 
-      // If user selects "No", clear the branch.
+      // If the attendee selects "No", clear the branch.
       if (name === "isLocciMember" && value === "no") {
         updated.locciBranch = "";
       }
@@ -148,8 +128,8 @@ const RegistrationForm = ({ onSuccess }) => {
       });
     }
 
-    // Clear branch error when changing LOCCI membership.
-    if (name === "isLocciMember" && errors.locciBranch) {
+    // Clear branch error when switching away from LOCCI.
+    if (name === "isLocciMember" && value === "no") {
       setErrors((prev) => {
         const next = { ...prev };
         delete next.locciBranch;
@@ -217,6 +197,13 @@ const RegistrationForm = ({ onSuccess }) => {
     }
   };
 
+  const selectClassName = (hasError) =>
+    `w-full px-4 py-3 rounded-lg border ${
+      hasError
+        ? "border-red-400 focus:ring-red-300"
+        : "border-unleash-brown/20 focus:border-unleash-orange focus:ring-unleash-orange/20"
+    } bg-white text-unleash-brown outline-none focus:ring-2 transition-colors`;
+
   return (
     <section className="py-8 bg-white">
       <div className="max-w-3xl mx-auto px-4">
@@ -274,20 +261,37 @@ const RegistrationForm = ({ onSuccess }) => {
             />
 
             {/* Age Group */}
-            <FormField
-              label="Age Group"
-              name="ageGroup"
-              type="select"
-              value={formData.ageGroup}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.ageGroup}
-              required
-              options={[
-                { value: "", label: "Select your age group" },
-                ...AGE_GROUPS,
-              ]}
-            />
+            <div>
+              <label
+                htmlFor="ageGroup"
+                className="block text-sm font-medium text-unleash-brown mb-2"
+              >
+                Age Group <span className="text-red-500">*</span>
+              </label>
+
+              <select
+                id="ageGroup"
+                name="ageGroup"
+                value={formData.ageGroup}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={selectClassName(errors.ageGroup)}
+              >
+                <option value="">Select your age group</option>
+
+                {AGE_GROUPS.map((group) => (
+                  <option key={group.value} value={group.value}>
+                    {group.label}
+                  </option>
+                ))}
+              </select>
+
+              {errors.ageGroup && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.ageGroup}
+                </p>
+              )}
+            </div>
 
             {/* City */}
             <div className="md:col-span-2">
@@ -306,55 +310,77 @@ const RegistrationForm = ({ onSuccess }) => {
 
             {/* LOCCI Membership */}
             <div className="md:col-span-2">
-              <FormField
-                label="Are you from Love of Christ Chapel International Ministry (LOCCI)?"
+              <label
+                htmlFor="isLocciMember"
+                className="block text-sm font-medium text-unleash-brown mb-2"
+              >
+                Are you from Love of Christ Chapel International Ministry
+                (LOCCI)? <span className="text-red-500">*</span>
+              </label>
+
+              <select
+                id="isLocciMember"
                 name="isLocciMember"
-                type="select"
                 value={formData.isLocciMember}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.isLocciMember}
-                required
-                options={[
-                  {
-                    value: "",
-                    label: "Please select an option",
-                  },
-                  {
-                    value: "yes",
-                    label: "Yes, I am from LOCCI",
-                  },
-                  {
-                    value: "no",
-                    label: "No, I am not",
-                  },
-                ]}
-              />
+                className={selectClassName(errors.isLocciMember)}
+              >
+                <option value="">
+                  Select an option
+                </option>
+
+                <option value="yes">
+                  Yes, I am from LOCCI
+                </option>
+
+                <option value="no">
+                  No, I am not
+                </option>
+              </select>
+
+              {errors.isLocciMember && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.isLocciMember}
+                </p>
+              )}
             </div>
 
             {/* LOCCI Branch */}
             {formData.isLocciMember === "yes" && (
               <div className="md:col-span-2">
-                <FormField
-                  label="Select Your LOCCI Branch"
+                <label
+                  htmlFor="locciBranch"
+                  className="block text-sm font-medium text-unleash-brown mb-2"
+                >
+                  Select Your LOCCI Branch{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+
+                <select
+                  id="locciBranch"
                   name="locciBranch"
-                  type="select"
                   value={formData.locciBranch}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={errors.locciBranch}
-                  required
-                  options={[
-                    {
-                      value: "",
-                      label: "Select your branch",
-                    },
-                    ...LOCCI_BRANCHES.map((branch) => ({
-                      value: branch,
-                      label: branch,
-                    })),
-                  ]}
-                />
+                  className={selectClassName(errors.locciBranch)}
+                >
+                  <option value="">
+                    Select your branch
+                  </option>
+
+                  {LOCI_BRANCHES.map((branch) => (
+                    <option key={branch} value={branch}>
+                      {branch}
+                    </option>
+                  ))}
+                </select>
+
+                {errors.locciBranch && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.locciBranch}
+                  </p>
+                )}
               </div>
             )}
 
@@ -373,7 +399,7 @@ const RegistrationForm = ({ onSuccess }) => {
             </div>
           </div>
 
-          {/* Submission Error */}
+          {/* Submit Error */}
           {submitError && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
               {submitError}
